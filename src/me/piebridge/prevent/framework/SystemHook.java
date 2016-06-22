@@ -319,12 +319,12 @@ public final class SystemHook {
             return false;
         }
         if (isAppInactive(usm, packageName)) {
-            PreventLog.d(packageName + " already inactive");
+            PreventLog.w(packageName + " already inactive");
         } else {
             if (!setAppInactive(usageStatsService, packageName)) {
                 return false;
             }
-            PreventLog.d("set " + packageName + " to inactive, current inactive: " + isAppInactive(usm, packageName));
+            PreventLog.w("set " + packageName + " to inactive, current inactive: " + isAppInactive(usm, packageName));
         }
         return isAppInactive(usm, packageName);
     }
@@ -341,13 +341,13 @@ public final class SystemHook {
             method.invoke(usageStatsService, packageName, true, 0);
             return true;
         } catch (NoSuchMethodException e) {
-            PreventLog.d("7. cannot inactive(no method) " + packageName, e);
+            PreventLog.w("7. cannot inactive(no method) " + packageName, e);
             return false;
         } catch (InvocationTargetException e) {
-            PreventLog.d("7. cannot inactive(invoke) " + packageName, e);
+            PreventLog.w("7. cannot inactive(invoke) " + packageName, e);
             return false;
         } catch (IllegalAccessException e) {
-            PreventLog.d("7. cannot inactive(illegal access) " + packageName, e);
+            PreventLog.w("7. cannot inactive(illegal access) " + packageName, e);
             return false;
         }
     }
@@ -653,6 +653,7 @@ public final class SystemHook {
         } else if (force) {
             HideApiUtils.forceStopPackage(mContext, packageName);
         } else if (!isUseAppStandby() || !inactive(packageName)) {
+            PreventLog.w("failed to set" + packageName + "to be inactive");
             NotificationManagerServiceUtils.keepNotification(packageName);
             HideApiUtils.forceStopPackage(mContext, packageName);
         }
